@@ -1,0 +1,153 @@
+@import "styles/colors.scss";
+@import "styles/list.scss";
+@import "styles/header.scss";
+@import "styles/animations.scss";
+@import "styles/tooltip.scss";
+@import "styles/spinner.scss";
+@import "styles/modal.scss";
+
+#mainContentBlock {
+  position: relative;
+  display: none;
+  top: 100px;
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+  transition: top 0.5s;
+}
+
+input[type=text] {
+  font-size: 18px;
+  padding: 10px 10px 10px 5px;
+  display: block;
+  width: 270px;
+  border: none;
+  border-bottom: 2px solid #757575;
+  float: right;
+  background: transparent;
+  color: white;
+  margin-right: 50px;
+  background-image: url('img/icon/search.png');
+  background-size: 28px;
+  background-repeat: no-repeat;
+  background-position: right;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.smallContentBlock {
+  position: relative;
+  top: 67.5px !important;
+  width: 100% !important;
+}
+
+body {
+  font-size: 22px;
+  font-family: Verdana;
+  background-color: rgb(39, 39, 39);
+  color: white;
+  transition: linear 0.5s;
+}
+
+.error {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10em;
+  background-color: rgba(255, 70, 0, 0.6);
+  padding: 15px 7px;
+  max-width: 70em;
+  border: 2px solid #fff;
+  color: white;
+  text-align: center;
+  display: none;
+  transition: margin-top 0.35s;
+}
+
+.mapCircle {
+  background-color: transparent;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  display: inline-block;
+  text-align: center;
+  background-size: cover;
+  -webkit-background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center center;
+  color: white;
+  object-fit: cover;
+  transition: 325ms cubic-bezier(0.17, 0.04, 0.03, 0.94);
+  transition-delay: 125ms;
+  transform: scale(0);
+}
+
+.mapCircleHover {
+  transform: scale(1);
+}
+
+.center {
+  margin: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+/* MEDIA QUERIES
+*/
+
+@media screen and (max-height: 800px) {
+  li {
+    font-size: 20px;
+    padding: 17px 13.5px;
+  }
+  
+  #mainContentBlock {
+    position: relative;
+    top: 67.5px;
+    transition: top 0.5s;
+    width: 100% !important;
+  }
+
+  #topBlock {
+    padding: 10px 20px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  #topBlock label, #connectionCircle {
+    display: none;
+  }
+
+  input[type=text] {
+    width: 90%;
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  li {
+    font-size: 20px;
+    padding: 17px 13.5px;
+  }
+
+  #topBlock {
+    padding: 10px 0px;
+  }
+
+  #mainContentBlock {
+    width: 100% !important;
+  }
+  
+}
+
+@media screen and (max-width: 600px), screen and (max-height: 600px) {
+  .error {
+    margin-top: 6em;
+    font-size: 17.5px;
+  }
+}

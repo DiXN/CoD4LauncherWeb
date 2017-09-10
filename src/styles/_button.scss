@@ -1,0 +1,25 @@
+%button-style {
+  font-size: 18px;
+  transition: box-shadow .25s ease;
+  outline: 0;
+  padding: .3em .85em;
+  margin: 0;
+  line-height: normal;
+}
+
+@mixin button-color($button-color, $text-color: $white) {
+  background: $button-color;
+  border: darken($button-color, 10%);
+  color: $text-color;
+
+  &:not([disabled]) {
+    &:hover {
+      background: lighten($button-color, 5%);
+      cursor: pointer;
+    }
+
+    &:active {
+      background: darken($button-color, 5%);
+    }
+  }
+}

@@ -1,0 +1,93 @@
+li {
+  margin: 0.42em 0;
+  overflow: hidden;
+  display: block;
+  position: relative;
+  right: 20px;
+  padding: 22px 13.5px;
+  background-color: rgb(48, 48, 49);
+  box-shadow: rgba(10, 10, 10, 0.4) 0px 1px 5px;
+  text-align: center;
+  color: white;
+  opacity: 0.88;
+  cursor: pointer;
+  transition: 0.15s linear;
+
+  &:hover {
+    transform: scale(1.01);
+  }
+
+  .liTitleDiv:hover:before {
+    content: 'click to join: ';
+  }
+}
+
+.liContentGreen {
+  background-color: $green;
+  box-shadow: rgba(10, 10, 10, 0.4) 0px 1px 5px;
+
+  &:active {
+    background-color: rgb(0, 100, 50);
+  }
+}
+
+.liContentOrange {
+  background-color: $orange;
+  box-shadow: rgba(10, 10, 10, 0.4) 0px 1px 5px;
+
+  &:active {
+    background-color: rgb(255, 170, 0);
+  }
+}
+
+.liContentRed {
+  background-color: $red;
+  box-shadow: rgba(10, 10, 10, 0.4) 0px 1px 5px;
+
+  &:active {
+    background-color: rgb(180, 0, 0);
+  }
+}
+
+.liContentHidden {
+  display: none;
+}
+
+.smallLi {
+  font-size: 20px;
+  padding: 17px;
+}
+
+/* LI INTERNAL
+*/
+
+.flexParent {
+  display: flex;
+  align-items: center;
+
+  .liTitleDiv {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .statsDiv {
+    white-space: nowrap;
+    display: inline-block;
+
+    .playerDiv {
+      width: 66px;
+      float: left;
+      padding-left: 7px;
+    }
+
+    .pingDiv {
+      width: 72px;
+      float: right;
+      padding-left: 10.5px;
+      text-align: left;
+    }
+  }
+}
+
