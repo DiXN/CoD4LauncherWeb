@@ -34,106 +34,115 @@ $background: rgba($lightgrey, 0.80);
   background-repeat: no-repeat;
   background-position: center center;
   @extend %vertical-center;
-}
 
-.header {
-  position: absolute;
-  top: 0;
-  font-size: $font-size;
-  width: 100%;
-  padding: 15px 0;
-  border-radius: 5px 5px 0 0;
-  background-color: $background;
-  opacity: 0.80;
-  text-align: center;
-
-  span {
+  .header {
     position: absolute;
-    right: 13px;
-    top: 13px;
+    top: 0;
+    font-size: $font-size;
+    width: 100%;
+    padding: 15px 0;
+    border-radius: 5px 5px 0 0;
+    background-color: $background;
+    opacity: 0.80;
+    text-align: center;
 
-    &:hover {
-      color: darken(white, 20%);
-      cursor: pointer;
-    }
-  }
-}
+    span {
+      position: absolute;
+      right: 13px;
+      top: 13px;
 
-.body {
-  width: 93%;
-  min-height: 2em;
-  font-size: 18px;
-  padding: 0.5em;
-  @extend %vertical-center;
-
-  .titleContainer {
-    margin-bottom: 0.8em;
-    background: rgba($lightgrey, 0.93);
-  }
-
-  .flexParent {
-    > div {
-      padding: 0.45em;
-      text-align: center;
-    }
-    .statsDiv {
-      width: 4em;
+      &:hover {
+        color: darken(white, 20%);
+        cursor: pointer;
+      }
     }
   }
 
-  .playersList {
-    .playerContainer {
+  .body {
+    width: 93%;
+    min-height: 2em;
+    font-size: 18px;
+    padding: 0.5em;
+    @extend %vertical-center;
+
+    .titleContainer {
+      margin-bottom: 0.8em;
       background: rgba($lightgrey, 0.93);
+    }
 
-      &:nth-child(odd) {
-        background: rgba($grey, 0.93);
+    .flexParent {
+      > div {
+        padding: 0.45em;
+        text-align: center;
+      }
+      .statsDiv {
+        width: 4em;
+      }
+    }
+
+    .playersList {
+      .playerContainer {
+        background: rgba($lightgrey, 0.93);
+
+        &:nth-child(odd) {
+          background: rgba($grey, 0.93);
+        }
+      }
+    }
+  }
+
+  .footer {
+    position: absolute;
+    bottom: 0;
+    padding: 9px 0;
+    background-color: $background;
+    font-size: $font-size;
+    border-radius: 0 0 5px 5px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+    span {
+      display: inline-block;
+      margin-left: 10px;
+    }
+
+    div:last-child {
+      margin-left: auto;
+
+      button {
+        float: right;
+        margin-right: 10px;
+        align-self: flex-end;
+        @extend %button-style;
+        @include button-color($green);
+
+        &.danger {
+          @include button-color($red);
+        }
+
+        &.info {
+          @include button-color($blue);
+        }
       }
     }
   }
 }
 
-.footer {
-  position: absolute;
-  bottom: 0;
-  padding: 9px 0;
-  background-color: $background;
-  font-size: $font-size;
-  border-radius: 0 0 5px 5px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-
-  span {
-    display: inline-block;
-    margin-left: 10px;
-  }
-
-  div:last-child {
-    margin-left: auto;
-
-    button {
-      float: right;
-      margin-right: 10px;
-      align-self: flex-end;
-      @extend %button-style;
-      @include button-color($green);
-
-      &.danger {
-        @include button-color($red);
-      }
-
-      &.info {
-        @include button-color($blue);
-      }
-    }
-  }
-}
-
-.fade-in-appear {
+.fade-enter {
   opacity: 0.01;
+
+  &.fade-enter-active {
+    opacity: 1;
+    transition: 180ms ease-in;
+  }
 }
 
-.fade-in-appear.fade-in-appear-active{
+.fade-leave {
   opacity: 1;
-  transition: 220ms ease-in;
+
+  &.fade-leave-active {
+    opacity: 0.01;
+    transition: 180ms ease-in;
+  }
 }

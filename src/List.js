@@ -26,16 +26,20 @@ class List extends Component {
     }
   }
 
-  getMapImage(map) {  
-    import(`./img/maps/${map}.jpg`)
-    .then(mapImage => {
-      var circle = document.querySelector('.mapCircle')
-      circle.classList.add('mapCircleHover')
-      circle.style.backgroundImage = `url("${mapImage}")`
-    })
-    .catch(err => {
-      console.log(`can not find ${map}.jpg`)
-    });
+  getMapImage(map, e) {  
+    if(!e) e = window.event
+
+    if(e.shiftKey) {
+      import(`./img/maps/${map}.jpg`)
+      .then(mapImage => {
+        var circle = document.querySelector('.mapCircle')
+        circle.classList.add('mapCircleHover')
+        circle.style.backgroundImage = `url("${mapImage}")`
+      })
+      .catch(err => {
+        console.log(`can not find ${map}.jpg`)
+      });
+    }
   }
 
   handleServerClick(ip) {
@@ -63,7 +67,7 @@ class List extends Component {
     const constructListElement = (className, item, key) => {
       return (
         <li className={className} key={key} onContextMenu={(e) => this.handleRightClick(e, item)} 
-          onClick={() => {this.handleServerClick(item.IP)}} onMouseOver={() => {this.getMapImage(item.Map)}} 
+          onClick={() => {this.handleServerClick(item.IP)}} onMouseOver={(e) => {this.getMapImage(item.Map, e)}} 
               onMouseOut={() => {document.querySelector('.mapCircle').classList.remove('mapCircleHover')}}>
           <div className='flexParent'>
             <div className='liTitleDiv'>{item.ServerName}</div>                    

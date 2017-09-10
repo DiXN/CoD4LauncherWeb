@@ -32,9 +32,15 @@ class Modal extends Component {
     }
   }
 
+  onClickOutside(event) {
+    if(!event.target.closest('.modal')) {
+      this.props.onClose()
+    }
+  }
+
   render() {  
     if(!this.props.show) {
-      return null
+      return <ReactCSSTransitionGroup transitionName="fade"  transitionEnterTimeout={1000} transitionLeaveTimeout={1000}/>
     }
 
     const playerStatus = () => {
@@ -91,9 +97,8 @@ class Modal extends Component {
     }
 
     return(
-      <ReactCSSTransitionGroup transitionName="fade-in" transitionAppear={true} 
-        transitionAppearTimeout={1000} transitionEnterTimeout={1000} transitionLeaveTimeout={1000}>
-        <div className="backdrop">
+      <ReactCSSTransitionGroup transitionName="fade" transitionEnterTimeout={1000} transitionLeaveTimeout={1000}>
+        <div className="backdrop" onClick={(e) => {this.onClickOutside(e)}}>
           <div className="modal" style={{backgroundImage : this.state.map}}>
             <div className="header">
               {this.props.item.ServerName}

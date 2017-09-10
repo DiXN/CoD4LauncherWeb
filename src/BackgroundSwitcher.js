@@ -15,24 +15,24 @@ class BackgroundSwitcher extends Component {
   }
 
   setWallpaper = (img) => {
-      import(`./img/wallpaper/${img}.jpg`)
-      .then(mapImage => {
-        this.setState({
-          imageUrls: [...this.state.imageUrls, `url("${mapImage}")`]
-        })
+    import(`./img/wallpaper/${img}.jpg`)
+    .then(mapImage => {
+      this.setState({
+        imageUrls: [...this.state.imageUrls, `url("${mapImage}")`]
       })
+    })
   }
 
   componentDidMount() {
-      this.imageNames.forEach((element) => {
-        this.setWallpaper(element)
-      })  
+    this.imageNames.forEach((element) => {
+      this.setWallpaper(element)
+    })  
 
-      setInterval(() => {
-        this.setState({
-          rndImage: this.getRndNumber()
-        })
-      }, this.props.timeout);
+    setInterval(() => {
+      this.setState({
+        rndImage: this.getRndNumber()
+      })
+    }, this.props.timeout);
   }
 
   render() {
