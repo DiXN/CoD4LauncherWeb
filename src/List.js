@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Modal from './Modal.js';
 import Websocket from './WebSocket.js';
+import {TransitionMotion, spring, presets} from 'react-motion';
 
 class List extends Component {
   constructor(props) {
@@ -22,11 +23,17 @@ class List extends Component {
       this.setState({
         list: nextProps.socksMessage.servers,
         item: nextProps.socksMessage.servers.find((elem) => elem.IPorName === this.state.IpOrName)
+      }, () => {
+        if(this.state.list.length >= 12) {
+          document.querySelector('#mainContentBlock').classList.add('smallContentBlock')
+        } else {
+          document.querySelector('#mainContentBlock').classList.remove('smallContentBlock')
+        }
       })
     }
   }
 
-  getMapImage(map, e) {  
+  getMapImage(map, e) {
     if(!e) e = window.event
 
     if(e.shiftKey) {
@@ -58,54 +65,105 @@ class List extends Component {
   }
 
   toggleModal() {
+    const open = this.state.isOpen
+
+    if (open) {
+      document.querySelector('#topBlock').style.zIndex = 1
+    } else {
+      document.querySelector('#topBlock').style.zIndex = 0
+    }
+
     this.setState({
-      isOpen: !this.state.isOpen
+      isOpen: !open
     });
   }
 
-  render() {  
-    const constructListElement = (className, item, key) => {
-      return (
-        <li className={className} key={key} onContextMenu={(e) => this.handleRightClick(e, item)} 
-          onClick={() => {this.handleServerClick(item.IP)}} onMouseOver={(e) => {this.getMapImage(item.Map, e)}} 
-              onMouseOut={() => {document.querySelector('.mapCircle').classList.remove('mapCircleHover')}}>
-          <div className='flexParent'>
-            <div className='liTitleDiv'>{item.ServerName}</div>                    
-            <div className='statsDiv'>
-              <div className='playerDiv'>{item.CurrentPlayers}/{item.MaxPlayers}</div>                         
-              <div className='pingDiv'>P: {item.Ping}</div>           
-            </div>
-          </div>
-        </li>
-      );
+  getDefaultStyles = () => {
+    return this.state.list.map((li, i) => ({data: li, key: i.toString(), style: {paddingTop: 0, paddingBottom: 0, height: 0, opacity: 0.88}}))
+  }
+
+  getStyles = () => {
+    return this.state.list.filter((elem) => elem.ServerName
+    != null ? elem.ServerName.toLowerCase().indexOf(this.props.filter) > -1 : elem.IPorName.
+        toLowerCase().indexOf(this.props.filter) > -1).sort((a, b) => b.CurrentPlayers - a.CurrentPlayers).map((item, key) => {
+      return {
+        data: item,
+        key: key.toString(),
+        style: {
+          height: spring(64, presets.gentle),
+          paddingTop: spring(19.5, presets.gentle),
+          paddingBottom: spring(19.5, presets.gentle),
+          opacity: spring(0.88, presets.gentle),
+        }
+      }
+    })
+  }
+
+  willEnter() {
+    return {
+      height: 0,
+      paddingTop: 0,
+      paddingBottom: 0,
+      opacity: 0.88
     }
+  }
 
-    const listItems = this.state.list.filter((elem) => elem.ServerName 
-      != null ? elem.ServerName.toLowerCase().indexOf(this.props.filter) > -1 : elem.IPorName.
-          toLowerCase().indexOf(this.props.filter) > -1).sort((a, b) => b.CurrentPlayers - a.CurrentPlayers).map((item, key) => {
+  willLeave() {
+    return {
+      height: spring(0, {stiffnes: 180, damping: 12}),
+      paddingTop: spring(0),
+      paddingBottom: spring(0),
+      opacity: spring(0, {stiffnes: 180, damping: 12})
+    }
+  }
 
-      const maxPlayers = item.MaxPlayers
-      const curPlayers = item.CurrentPlayers            
-      const status = item.Status
+  render() {
+    const contructListElement = (key, style, li) => {
+      const maxPlayers = li.MaxPlayers
+      const curPlayers = li.CurrentPlayers
+      const status = li.Status
+      let className = 'liContentRed'
 
       if (status !== 'DOWN') {
         if(maxPlayers - curPlayers >= 3) {
-          return constructListElement('liContentGreen', item, key)
+          className = 'liContentGreen'
         } else if (maxPlayers - curPlayers === 0) {
-          return constructListElement('liContentRed', item, key)
+          className = 'liContentRed'
         } else if (maxPlayers - curPlayers <= 2){
-          return constructListElement('liContentOrange', item, key)
+          className = 'liContentOrange'
+        } else {
+          return <li className='liContentRed' key={key}>{li.IPorName} is DOWN</li>
         }
+
+        return(
+          <li className={className} key={key} style={style} onContextMenu={(e) => this.handleRightClick(e, li)}
+            onClick={() => {this.handleServerClick(li.IP)}} onMouseOver={(e) => {this.getMapImage(li.Map, e)}}
+              onMouseOut={() => {document.querySelector('.mapCircle').classList.remove('mapCircleHover')}}>
+            <div className='flexParent'>
+              <div className='liTitleDiv'>{li.ServerName}</div>
+              <div className='statsDiv'>
+                <div className='playerDiv'>{li.CurrentPlayers}/{li.MaxPlayers}</div>
+                <div className='pingDiv'>P: {li.Ping}</div>
+              </div>
+            </div>
+          </li>
+        )
       } else {
-        return <li className='liContentRed' key={key}>{item.IPorName} is DOWN</li>
+        return <li className='liContentRed' key={key} style={style}>{li.IPorName} is DOWN</li>
       }
-    })
+    }
 
     return (
       <div>
-        <ul id="contentList">
-          {listItems}
-        </ul>
+        <TransitionMotion defaultStyles={this.getDefaultStyles()} styles={this.getStyles()} willLeave={this.willLeave} willEnter={this.willEnter}>
+          {styles =>
+            <ul id="contentList">
+              {styles.map(({key, style, data: li}) =>
+                {return contructListElement(key, style, li)}
+              )}
+            </ul>
+          }
+        </TransitionMotion>
         <Modal show={this.state.isOpen} onClose={this.toggleModal.bind(this)} onServerClick={this.handleServerClick.bind(this)} item={this.state.item}/>
       </div>
     )

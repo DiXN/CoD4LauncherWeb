@@ -56,7 +56,13 @@ class Websocket extends Component {
   static send(msg) {
     if(Websocket.socket != null) {
       Websocket.socket.send(msg)
-      console.log(msg)
+
+      const message = JSON.parse(msg)
+      if (message.CONNECT != null) {
+        console.log(`Connecting to server with ip: ${message.CONNECT}`);
+      } else {
+        console.log(msg)
+      }
     }
   }
 

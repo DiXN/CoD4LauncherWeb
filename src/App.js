@@ -40,7 +40,7 @@ class App extends Component {
 
         <div className="error" id="errorBlock">
           Could not connect to CoD4Launcher. check if the application is running on the same PC as the website
-          <br/>and make sure that port 8181 is not blocked by any other service.
+          <br/>and make sure that port 13660 is not blocked by any other service.
           <p>
             Currently only Firefox, Chrome and Opera are fully supported.
             <br/>Although any Chromium or Mozilla based browser probably works.

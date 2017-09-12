@@ -1,17 +1,18 @@
 li {
+  box-sizing: border-box;
   margin: 0.42em 0;
   overflow: hidden;
   display: block;
   position: relative;
   right: 20px;
-  padding: 22px 13.5px;
+  padding: 0 13.5px;
   background-color: rgb(48, 48, 49);
   box-shadow: rgba(10, 10, 10, 0.4) 0px 1px 5px;
   text-align: center;
   color: white;
-  opacity: 0.88;
+  opacity: 0;
+  font-size: 20.6px;
   cursor: pointer;
-  transition: 0.15s linear;
 
   &:hover {
     transform: scale(1.01);
@@ -90,4 +91,3 @@ li {
     }
   }
 }
-

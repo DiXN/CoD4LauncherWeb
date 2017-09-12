@@ -13,7 +13,7 @@ $background: rgba($lightgrey, 0.80);
 
 .backdrop {
   position: fixed;
-  z-index: 3000;
+  z-index: 2;
   top: 0;
   bottom: 0;
   left: 0;
@@ -26,7 +26,6 @@ $background: rgba($lightgrey, 0.80);
   height: 100%;
   display: block;
   background-color: rgb(39, 39, 39);
-  z-index: 3100;
   border-radius: 5px;
   max-width: 58em;
   max-height: 33em;

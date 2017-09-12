@@ -9,11 +9,12 @@
 #mainContentBlock {
   position: relative;
   display: none;
-  top: 100px;
+  top: 115px;
   width: 95%;
   margin-left: auto;
   margin-right: auto;
   transition: top 0.5s;
+  margin-top: 30px;
 }
 
 input[type=text] {
@@ -101,11 +102,6 @@ body {
 */
 
 @media screen and (max-height: 800px) {
-  li {
-    font-size: 20px;
-    padding: 17px 13.5px;
-  }
-  
   #mainContentBlock {
     position: relative;
     top: 67.5px;
@@ -130,11 +126,6 @@ body {
     margin-right: auto;
   }
 
-  li {
-    font-size: 20px;
-    padding: 17px 13.5px;
-  }
-
   #topBlock {
     padding: 10px 0px;
   }
@@ -142,7 +133,7 @@ body {
   #mainContentBlock {
     width: 100% !important;
   }
-  
+
 }
 
 @media screen and (max-width: 600px), screen and (max-height: 600px) {
