@@ -27,7 +27,7 @@ class Modal extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.item !== undefined && nextProps.item !== null) {
+    if (nextProps.item != null) {
       this.getMapImage(nextProps.item.Map)
     }
   }
@@ -38,14 +38,14 @@ class Modal extends Component {
     }
   }
 
-  render() {  
+  render() {
     if(!this.props.show) {
       return <ReactCSSTransitionGroup transitionName="fade"  transitionEnterTimeout={1000} transitionLeaveTimeout={1000}/>
     }
 
     const playerStatus = () => {
       const maxPlayers = this.props.item.MaxPlayers
-      const curPlayers = this.props.item.CurrentPlayers            
+      const curPlayers = this.props.item.CurrentPlayers
 
       if(maxPlayers - curPlayers >= 3) {
         return { color: 'rgb(0, 110, 0)' }
@@ -78,10 +78,10 @@ class Modal extends Component {
               <div className="flexParent">
                 <div className="liTitleDiv">{splitItem[2]}</div>
                 <div className="statsDiv">
-                  <div>{splitItem[1]}</div>                         
+                  <div>{splitItem[1]}</div>
                 </div>
                 <div className="statsDiv">
-                  <div>{splitItem[0]}</div>  
+                  <div>{splitItem[0]}</div>
                 </div>
               </div>
             </div>
@@ -109,7 +109,7 @@ class Modal extends Component {
                 <div className="flexParent">
                   <div className="liTitleDiv">Player</div>
                   <div className="statsDiv">Ping</div>
-                  <div className="statsDiv">Score</div>                                   
+                  <div className="statsDiv">Score</div>
                 </div>
               </div>
               <Scrollbars style={{maxHeight: '30em'}} speed={75}>

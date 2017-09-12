@@ -16,13 +16,13 @@ class List extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.socksMessage.servers !== undefined && nextProps.socksMessage.servers != null && nextProps.socksMessage.servers !== this.state.list) {
+    if (nextProps.socksMessage.servers != null && nextProps.socksMessage.servers !== this.state.list) {
       document.querySelector('#mainContentBlock').style.display = 'block'
       document.querySelector('.spinner').style.display = 'none'
 
       this.setState({
         list: nextProps.socksMessage.servers,
-        item: nextProps.socksMessage.servers.find((elem) => elem.IPorName === this.state.IpOrName)
+        item: nextProps.socksMessage.servers.find((elem) => elem != null ? elem.IPorName === this.state.IpOrName : false)
       }, () => {
         if(this.state.list.length >= 12) {
           document.querySelector('#mainContentBlock').classList.add('smallContentBlock')
@@ -83,8 +83,8 @@ class List extends Component {
   }
 
   getStyles = () => {
-    return this.state.list.filter((elem) => elem.ServerName
-    != null ? elem.ServerName.toLowerCase().indexOf(this.props.filter) > -1 : elem.IPorName.
+    return this.state.list.filter((elem) => elem != null).filter((elem) => elem.ServerName
+      != null ? elem.ServerName.toLowerCase().indexOf(this.props.filter) > -1 : elem.IPorName.
         toLowerCase().indexOf(this.props.filter) > -1).sort((a, b) => b.CurrentPlayers - a.CurrentPlayers).map((item, key) => {
       return {
         data: item,
@@ -110,10 +110,10 @@ class List extends Component {
 
   willLeave() {
     return {
-      height: spring(0, {stiffnes: 180, damping: 12}),
+      height: spring(0, presets.wobbly),
       paddingTop: spring(0),
       paddingBottom: spring(0),
-      opacity: spring(0, {stiffnes: 180, damping: 12})
+      opacity: spring(0, presets.wobbly)
     }
   }
 
