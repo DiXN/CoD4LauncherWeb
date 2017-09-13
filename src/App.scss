@@ -9,7 +9,7 @@
 #mainContentBlock {
   position: relative;
   display: none;
-  top: 115px;
+  top: 125px;
   width: 95%;
   margin-left: auto;
   margin-right: auto;
@@ -108,32 +108,55 @@ body {
     transition: top 0.5s;
     width: 100% !important;
   }
-
-  #topBlock {
-    padding: 10px 20px;
-  }
 }
 
 @media screen and (max-width: 600px) {
+
+  * {
+    box-sizing: border-box;
+  }
+
   #topBlock label, #connectionCircle {
     display: none;
   }
 
   input[type=text] {
-    width: 90%;
-    float: none;
-    margin-left: auto;
-    margin-right: auto;
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
   }
 
-  #topBlock {
-    padding: 10px 0px;
+  .top-container {
+    .sort-block {
+      .sort-container {
+        flex: 1;
+
+        .sort-label {
+          width: 100%;
+        }
+
+        .sort-menu {
+          div {
+            width: 100%;
+          }
+        }
+
+        div {
+          width: 100%;
+        }
+      }
+    }
   }
+
+  #topBlock div:last-child {
+    width: 100%;
+    align-items: center;
+  }
+
 
   #mainContentBlock {
     width: 100% !important;
   }
-
 }
 
 @media screen and (max-width: 600px), screen and (max-height: 600px) {

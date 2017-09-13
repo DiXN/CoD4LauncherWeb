@@ -12,7 +12,8 @@ class App extends Component {
 
     this.state = {
       filter: '',
-      socksMessage: ''
+      socksMessage: '',
+      sort: localStorage.getItem('sort') === null ? 'player' : localStorage.getItem('sort')
     }
   }
 
@@ -28,14 +29,20 @@ class App extends Component {
     })
   }
 
+  sortCallback(data) {
+    this.setState({
+      sort: data
+    })
+  }
+
   render() {
     return (
       <div id="bodyContent">
         <Websocket connectionString = "ws://127.0.0.1:13660/websession/" callback={this.socketCallback.bind(this)}/>
-        <Header callback={this.filterCallback.bind(this)} socksMessage={this.state.socksMessage}/>
+        <Header callback={this.filterCallback.bind(this)} sort={this.state.sort} sortCallback={this.sortCallback.bind(this)} socksMessage={this.state.socksMessage}/>
 
         <div className="fadeIn" id="mainContentBlock">
-          <List filter={this.state.filter} socksMessage={this.state.socksMessage}/>
+          <List filter={this.state.filter} sort={this.state.sort} socksMessage={this.state.socksMessage}/>
         </div>
 
         <div className="error" id="errorBlock">

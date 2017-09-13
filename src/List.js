@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Modal from './Modal.js';
 import Websocket from './WebSocket.js';
 import {TransitionMotion, spring, presets} from 'react-motion';
-import SortIco from 'react-icons/lib/fa/sort'
 
 class List extends Component {
   constructor(props) {
@@ -12,8 +11,7 @@ class List extends Component {
       list: [],
       isOpen: false,
       item: null,
-      IpOrName: '',
-      sort: localStorage.getItem('sort') === null ? 'player' : localStorage.getItem('sort')
+      IpOrName: ''
     }
   }
 
@@ -70,9 +68,9 @@ class List extends Component {
     const open = this.state.isOpen
 
     if (open) {
-      document.querySelector('#topBlock').style.zIndex = 1
+      document.querySelector('.top-container').style.zIndex = 1
     } else {
-      document.querySelector('#topBlock').style.zIndex = 0
+      document.querySelector('.top-container').style.zIndex = 0
     }
 
     this.setState({
@@ -85,9 +83,8 @@ class List extends Component {
   }
 
   getStyles = (a, b) => {
-
     const getSortType = (a, b) => {
-      const sort = this.state.sort
+      const sort = this.props.sort
 
       if (sort === 'player') {
         return b.CurrentPlayers - a.CurrentPlayers
@@ -168,27 +165,8 @@ class List extends Component {
       }
     }
 
-    const setSort = (sort) => {
-      this.setState({sort: sort})
-      localStorage.setItem('sort', sort)
-    }
-
     return (
       <div>
-        <div style={{display: 'flex', justifyContent: 'flex-end'}}>
-          <div className='sort'>
-            <div className='sort-label'>
-              <div><SortIco/></div>
-              <div><span>{this.state.sort}</span></div>
-            </div>
-            <div className='sort-content'>
-              <div onClick={() => {setSort('player')}}><span>player</span></div>
-              <div onClick={() => {setSort('ping')}}><span>ping</span></div>
-              <div onClick={() => {setSort('name')}}><span>name</span></div>
-            </div>
-          </div>
-        </div>
-
         <TransitionMotion defaultStyles={this.getDefaultStyles()} styles={this.getStyles()} willLeave={this.willLeave} willEnter={this.willEnter}>
           {styles =>
             <ul id="contentList">
