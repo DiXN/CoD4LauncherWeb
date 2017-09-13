@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Modal from './Modal.js';
 import Websocket from './WebSocket.js';
 import {TransitionMotion, spring, presets} from 'react-motion';
+import SortIco from 'react-icons/lib/fa/sort'
 
 class List extends Component {
   constructor(props) {
@@ -11,7 +12,8 @@ class List extends Component {
       list: [],
       isOpen: false,
       item: null,
-      IpOrName: ''
+      IpOrName: '',
+      sort: localStorage.getItem('sort') === null ? 'player' : localStorage.getItem('sort')
     }
   }
 
@@ -82,10 +84,23 @@ class List extends Component {
     return this.state.list.map((li, i) => ({data: li, key: i.toString(), style: {paddingTop: 0, paddingBottom: 0, height: 0, opacity: 0.88}}))
   }
 
-  getStyles = () => {
+  getStyles = (a, b) => {
+
+    const getSortType = (a, b) => {
+      const sort = this.state.sort
+
+      if (sort === 'player') {
+        return b.CurrentPlayers - a.CurrentPlayers
+      } else if(sort === 'ping') {
+        return a.Ping - b.Ping
+      } else if (sort === 'name') {
+        return b.ServerName - a.ServerName
+      }
+    }
+
     return this.state.list.filter((elem) => elem != null).filter((elem) => elem.ServerName
       != null ? elem.ServerName.toLowerCase().indexOf(this.props.filter) > -1 : elem.IPorName.
-        toLowerCase().indexOf(this.props.filter) > -1).sort((a, b) => b.CurrentPlayers - a.CurrentPlayers).map((item, key) => {
+        toLowerCase().indexOf(this.props.filter) > -1).sort((a, b) => getSortType(a, b)).map((item, key) => {
       return {
         data: item,
         key: key.toString(),
@@ -153,8 +168,27 @@ class List extends Component {
       }
     }
 
+    const setSort = (sort) => {
+      this.setState({sort: sort})
+      localStorage.setItem('sort', sort)
+    }
+
     return (
       <div>
+        <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+          <div className='sort'>
+            <div className='sort-label'>
+              <div><SortIco/></div>
+              <div><span>{this.state.sort}</span></div>
+            </div>
+            <div className='sort-content'>
+              <div onClick={() => {setSort('player')}}><span>player</span></div>
+              <div onClick={() => {setSort('ping')}}><span>ping</span></div>
+              <div onClick={() => {setSort('name')}}><span>name</span></div>
+            </div>
+          </div>
+        </div>
+
         <TransitionMotion defaultStyles={this.getDefaultStyles()} styles={this.getStyles()} willLeave={this.willLeave} willEnter={this.willEnter}>
           {styles =>
             <ul id="contentList">

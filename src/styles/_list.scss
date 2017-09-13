@@ -59,6 +59,86 @@ li {
   padding: 17px;
 }
 
+.sort {
+  $box-shadow: rgba(10, 10, 10, 0.4) 0px 1px 5px;
+
+  position: absolute;
+  top: -20px;
+  z-index: 2;
+  margin-bottom: 10px;
+
+  span {
+    display: inline-block;
+    position: relative;
+    bottom: 1.5px;
+  }
+
+  .sort-label {
+    font-size: 17px;
+    border-radius: 6px;
+    padding: 5px 10px;
+    background-color: $lightgrey;
+    margin: 0px 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 75px;
+    box-shadow: $box-shadow;
+
+    svg {
+      align-self: flex-start;
+      margin-right: 5px;
+      width: 0.87em;
+      height: 0.87em;
+      position: relative;
+      bottom: 0.5px;
+    }
+
+    span {
+      align-self: flex-end;
+    }
+  }
+
+  &:hover .sort-content {
+    opacity: 1;
+    cursor: pointer;
+  }
+
+  .sort-content {
+    transition: opacity linear 120ms;
+    opacity: 0;
+    position: relative;
+    margin-top: 10px;
+    font-size: 17px;
+    border-radius: 6px;
+    text-align: center;
+    width: 135px;
+    padding: 5px 0;
+    background-color: $lightgrey;
+    box-shadow: $box-shadow;
+
+    div {
+      padding: 5px 0;
+
+      &:hover {
+        background-color: $grey;
+      }
+    }
+
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      margin-left: -8px;
+      border-width: 8px;
+      border-style: solid;
+      border-color: transparent transparent  $lightgrey transparent;
+    }
+  }
+}
+
+
 /* LI INTERNAL
 */
 
