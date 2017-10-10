@@ -8,15 +8,7 @@ class Websocket extends Component {
 
   static socket = null
 
-  displayErrorMessage() {
-    var connectionCircle = document.getElementById('connectionCircle')
-    connectionCircle.style.backgroundColor = 'rgb(255,70,0)'
-    console.log('Socket is closed. Reconnect will be attempted in 2 seconds')
-    document.querySelector('.error').style.display = 'block'
-    connectionCircle.setAttribute('data-isUp', 'false')
-    document.querySelector('.spinner').style.display = 'none'
-    document.querySelector('#mainContentBlock').style.display = 'none'
-
+  retry() {
     setTimeout(() => {
       Websocket.socket = null
       this.setupWebsocket()
@@ -45,7 +37,7 @@ class Websocket extends Component {
     }
 
     websocket.onclose = (e) => {
-      this.displayErrorMessage()
+      this.retry()
     }
   }
 

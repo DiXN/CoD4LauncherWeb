@@ -13,7 +13,8 @@ class App extends Component {
     this.state = {
       filter: '',
       socksMessage: '',
-      sort: localStorage.getItem('sort') === null ? 'player' : localStorage.getItem('sort')
+      sort: localStorage.getItem('sort') === null ? 'player' : localStorage.getItem('sort'),
+      firebaseList: []
     }
   }
 
@@ -35,14 +36,21 @@ class App extends Component {
     })
   }
 
+  firebaseCallback(data) {
+    this.setState({
+      firebaseList: data
+    })
+  }
+
   render() {
     return (
       <div id="bodyContent">
         <Websocket connectionString = "ws://127.0.0.1:13660/websession/" callback={this.socketCallback.bind(this)}/>
-        <Header callback={this.filterCallback.bind(this)} sort={this.state.sort} sortCallback={this.sortCallback.bind(this)} socksMessage={this.state.socksMessage}/>
+        <Header callback={this.filterCallback.bind(this)} sort={this.state.sort}
+          sortCallback={this.sortCallback.bind(this)} socksMessage={this.state.socksMessage} firebaseCallback={this.firebaseCallback.bind(this)}/>
 
         <div className="fadeIn" id="mainContentBlock">
-          <List filter={this.state.filter} sort={this.state.sort} socksMessage={this.state.socksMessage}/>
+          <List filter={this.state.filter} sort={this.state.sort} socksMessage={this.state.socksMessage} firebaseList={this.state.firebaseList}/>
         </div>
 
         <div className="error" id="errorBlock">

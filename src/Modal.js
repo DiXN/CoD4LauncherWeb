@@ -69,7 +69,7 @@ class Modal extends Component {
     }
 
     const playersContainer = () => {
-      if(this.props.item.ListOfPlayers.length > 0 && this.props.item.ListOfPlayers[0] !== '') {
+      if(this.props.item.ListOfPlayers && this.props.item.ListOfPlayers.length > 0 && this.props.item.ListOfPlayers[0] !== '') {
         return this.props.item.ListOfPlayers.sort((a, b) => b.split(',')[0] - a.split(',')[0]).map((item, key) => {
           const splitItem = item.split(',')
 
@@ -120,7 +120,7 @@ class Modal extends Component {
             </div>
             <div className="footer">
               <div>
-                <span style={pingStatus()}>Ping: {this.props.item.Ping}</span>
+                {this.props.isConnected ? <span style={pingStatus()}>Ping: {this.props.item.Ping}</span> : null}
               </div>
               <div>
                 <span style={playerStatus()}>Players: {this.props.item.CurrentPlayers}/{this.props.item.MaxPlayers}</span>

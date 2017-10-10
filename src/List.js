@@ -11,27 +11,110 @@ class List extends Component {
       list: [],
       isOpen: false,
       item: null,
-      IpOrName: ''
+      IpOrName: '',
+      isConnected: false
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.socksMessage.servers != null && nextProps.socksMessage.servers !== this.state.list) {
+    const lengthCheck = () => {
+      if(this.state.list.length >= 12) {
+        document.querySelector('#mainContentBlock').classList.add('smallContentBlock')
+      } else {
+        document.querySelector('#mainContentBlock').classList.remove('smallContentBlock')
+      }
+    }
+
+    const display = () => {
       document.querySelector('#mainContentBlock').style.display = 'block'
       document.querySelector('.spinner').style.display = 'none'
+      document.querySelector('.error').style.display = 'none'
+      document.querySelector('#connectionCircle').style.backgroundColor = 'rgb(255,138,0)'
+    }
+
+    if (nextProps.socksMessage.servers != null && nextProps.socksMessage.servers !== this.state.list) {
+      display()
 
       this.setState({
         list: nextProps.socksMessage.servers,
+        isConnected: true,
         item: nextProps.socksMessage.servers.find((elem) => elem != null ? elem.IPorName === this.state.IpOrName : false)
       }, () => {
-        if(this.state.list.length >= 12) {
-          document.querySelector('#mainContentBlock').classList.add('smallContentBlock')
-        } else {
-          document.querySelector('#mainContentBlock').classList.remove('smallContentBlock')
-        }
+        lengthCheck()
       })
     }
+
+    if (nextProps.socksMessage.CLOSED != null) {
+      const displayError = () => {
+        console.log('server DOWN or not logged in!')
+        var connectionCircle = document.getElementById('connectionCircle')
+        connectionCircle.style.backgroundColor = 'rgb(255,70,0)'
+        document.querySelector('.error').style.display = 'block'
+        connectionCircle.setAttribute('data-isUp', 'false')
+        document.querySelector('.spinner').style.display = 'none'
+        document.querySelector('#mainContentBlock').style.display = 'none'
+      }
+
+      if (this.props.firebaseList.servers) {
+        const fetchServer = (endpoint) => {
+          Promise.all(this.props.firebaseList.servers.map((x) => {
+            return fetch(`${endpoint}/ip/${x.IP}`).then((response) => {
+              return response.json()
+            }).then((output) => {
+              if(output.status !== 'DOWN') {
+                return {
+                  IP:             x.IP,
+                  IPorName:       x.IPorName,
+                  Status:         output.status,
+                  CurrentPlayers: output.numplayers,
+                  MaxPlayers:     output.sv_maxclients,
+                  Map:            output.mapname,
+                  ServerName:     output.sv_hostname,
+                  ListOfPlayers:  output.list_of_players,
+                }
+              } else {
+                return {
+                  IP:             x.IP,
+                  IPorName:       x.IPorName,
+                  Status:         output.status,
+                  CurrentPlayers: '-1',
+                }
+              }
+            })
+          })).then((response) => {
+            display()
+
+            this.setState({
+              list: response,
+              item: response.find((elem) => elem != null ? elem.IPorName === this.state.IpOrName : false),
+              isConnected: false
+            }, () => {
+              lengthCheck()
+            })
+          }).catch(() => {
+            displayError()
+          })
+        }
+
+        const checkEndpoints = (endpoints) => {
+          if (endpoints.length === 0) {
+            return displayError()
+          } else {
+            const [x, ...xs] = endpoints
+            fetch(`${x}/ip/`).then((res) => {
+              return fetchServer(x)
+            }).catch(() => {
+              return checkEndpoints(xs)
+            })
+          }
+        }
+
+        checkEndpoints(['http://mknasx.myds.me:3000', 'http://mknas:3000'])
+    } else {
+      displayError()
+    }
   }
+}
 
   getMapImage(map, e) {
     if(!e) e = window.event
@@ -155,7 +238,7 @@ class List extends Component {
               <div className='liTitleDiv'>{li.ServerName}</div>
               <div className='statsDiv'>
                 <div className='playerDiv'>{li.CurrentPlayers}/{li.MaxPlayers}</div>
-                <div className='pingDiv'>P: {li.Ping}</div>
+                {this.state.isConnected ? <div className='pingDiv'>P: {li.Ping}</div> : null}
               </div>
             </div>
           </li>
@@ -176,7 +259,7 @@ class List extends Component {
             </ul>
           }
         </TransitionMotion>
-        <Modal show={this.state.isOpen} onClose={this.toggleModal.bind(this)} onServerClick={this.handleServerClick.bind(this)} item={this.state.item}/>
+        <Modal show={this.state.isOpen} onClose={this.toggleModal.bind(this)} onServerClick={this.handleServerClick.bind(this)} item={this.state.item} isConnected={this.state.isConnected}/>
       </div>
     )
   }

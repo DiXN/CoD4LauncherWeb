@@ -15,6 +15,7 @@
     "react-transition-group": "^2.2.0"
   },
   "devDependencies": {
+    "firebase": "^4.5.0",
     "react-scripts": "1.0.12"
   },
   "scripts": {
