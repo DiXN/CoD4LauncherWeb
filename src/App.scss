@@ -110,7 +110,7 @@ body {
   }
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 690px) {
 
   * {
     box-sizing: border-box;
@@ -146,6 +146,10 @@ body {
         & div[class*="label"], div[class*="menu"] div {
            width: 100%;
         }
+
+        & div[class*="label"] {
+          border-bottom: solid 0.75px #9b9b9b;
+        }
       }
     }
   }
@@ -165,5 +169,13 @@ body {
   .error {
     margin-top: 6em;
     font-size: 17.5px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .top-container {
+    .sub-menu {
+      font-size: 18px;
+    }
   }
 }

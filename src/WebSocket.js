@@ -22,17 +22,17 @@ class Websocket extends Component {
 
   setupWebsocket() {
     let websocket = new WebSocket(this.props.connectionString)
+    var connectionCircle = document.getElementById('connectionCircle')
 
     websocket.onopen = () => {
       Websocket.socket = websocket
-      var connectionCircle = document.getElementById('connectionCircle')
-      connectionCircle.style.backgroundColor = 'rgb(0,110,0)'
       document.getElementById('errorBlock').style.display = 'none'
       connectionCircle.setAttribute('data-isUp', 'true')
       document.querySelector('.spinner').style.display = 'block'
     }
 
     websocket.onmessage = (msg) => {
+      connectionCircle.style.backgroundColor = 'rgb(0,110,0)'
       this.sendToClients(JSON.parse(msg.data))
     }
 

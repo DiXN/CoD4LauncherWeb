@@ -96,7 +96,7 @@ class Header extends Component {
             {this.state.user ?
               <div className="login-container">
                 <div style={{padding: '7px 50px'}} className="login-label">
-                  <img src={this.state.user.photoURL}></img>
+                  <img src={this.state.user.photoURL} alt=''></img>
                   <span>{this.state.user.displayName}</span>
                 </div>
                 <div className="login-menu">

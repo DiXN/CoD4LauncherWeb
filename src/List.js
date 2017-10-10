@@ -29,7 +29,6 @@ class List extends Component {
       document.querySelector('#mainContentBlock').style.display = 'block'
       document.querySelector('.spinner').style.display = 'none'
       document.querySelector('.error').style.display = 'none'
-      document.querySelector('#connectionCircle').style.backgroundColor = 'rgb(255,138,0)'
     }
 
     if (nextProps.socksMessage.servers != null && nextProps.socksMessage.servers !== this.state.list) {
@@ -84,6 +83,10 @@ class List extends Component {
           })).then((response) => {
             display()
 
+            if (nextProps.socksMessage.CLOSED != null) {
+              document.querySelector('#connectionCircle').style.backgroundColor = 'rgb(255,138,0)'
+            }
+
             this.setState({
               list: response,
               item: response.find((elem) => elem != null ? elem.IPorName === this.state.IpOrName : false),
@@ -96,20 +99,22 @@ class List extends Component {
           })
         }
 
-        const checkEndpoints = (endpoints) => {
-          if (endpoints.length === 0) {
-            return displayError()
-          } else {
-            const [x, ...xs] = endpoints
-            fetch(`${x}/ip/`).then((res) => {
-              return fetchServer(x)
-            }).catch(() => {
-              return checkEndpoints(xs)
-            })
+        ((endpoints) => {
+          const checkEndpoints = (endpoints) => {
+            if (endpoints.length === 0) {
+              return displayError()
+            } else {
+              const [x, ...xs] = endpoints
+              fetch(`${x}/ip/`).then((res) => {
+                return fetchServer(x)
+              }).catch(() => {
+                return checkEndpoints(xs)
+              })
+            }
           }
-        }
-
-        checkEndpoints(['http://mknasx.myds.me:3000', 'http://mknas:3000'])
+          
+          checkEndpoints(endpoints)
+        })(['http://mknasx.myds.me:3000', 'http://mknas:3000'])
     } else {
       displayError()
     }

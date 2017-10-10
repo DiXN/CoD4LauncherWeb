@@ -98,6 +98,7 @@
 
         div {
           background-color: rgba($lightgrey, 0.80);
+          border-bottom: solid 0.35px lighten(#9b9b9b, 0.1);
 
           &:hover {
             background-color: rgba($lightgrey, 0.96);
