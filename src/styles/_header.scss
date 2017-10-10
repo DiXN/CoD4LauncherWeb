@@ -17,7 +17,7 @@
     background-color: rgba(40,43,48,0.85);
     padding: 10px 20px;
     transition: padding 400ms cubic-bezier(0.17, 0.04, 0.03, 0.94);
-    box-shadow: rgba(10, 10, 10, 0.4) 0px 1px 2px; 
+    box-shadow: rgba(10, 10, 10, 0.4) 0px 1px 2px;
     opacity: 0.80;
     width: 100%;
     display: flex;
@@ -43,46 +43,52 @@
       background-position: center;
     }
 
-    &:hover + .sort-block {
+    &:hover + .sub-menu {
       display: flex;
     }
   }
 
-  .sort-block {
+  .sub-menu {
     background-color: rgba($lightgrey, 0.60);
     width: 100%;
     display: none;
-    align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between;
 
     &:hover {
       display: flex;
     }
 
-    .sort-container {
-      .sort-label, .sort-menu div {
+    div[class*="container"]  {
+      & div[class*="label"], div[class*="menu"] div {
+        padding: 20px 50px;
         width: 220px;
         text-align: center;
-        padding: 20px 50px;
-        background-color: rgba($lightgrey, 0.40);
+        background-color: rgba($lightgrey, 0.50);
+        align-items: center;
+      }
 
-        &:hover {
-          background-color: rgba($lightgrey, 0.80);
+      .login-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        img {
+          height: 50px;
+          width: 50px;
+          border-radius: 50%;
         }
+      }
 
-        &:hover + .sort-menu {
+
+      div[class*="label"] {
+        cursor: pointer;
+
+        &:hover + div[class*="menu"] {
           display: block;
         }
       }
 
-      .sort-label {
-        span {
-          display: inline-block;
-          margin-left: 5px;
-        }
-      }
-
-      .sort-menu {
+      div[class*="menu"] {
         position: absolute;
         display: none;
 
@@ -97,6 +103,13 @@
             background-color: rgba($lightgrey, 0.96);
             cursor: pointer;
           }
+        }
+      }
+
+      .sort-label {
+        span {
+          display: inline-block;
+          margin-left: 5px;
         }
       }
     }

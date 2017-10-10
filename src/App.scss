@@ -127,22 +127,24 @@ body {
   }
 
   .top-container {
-    .sort-block {
-      .sort-container {
-        flex: 1;
+    .sub-menu {
+      flex-direction: column;
 
-        .sort-label {
-          width: 100%;
+      div[class*="container"] {
+        div[class*="menu"] {
+          position: relative;
         }
 
-        .sort-menu {
-          div {
-            width: 100%;
+        .login-label {
+          justify-content: center;
+
+          img  {
+            margin-right: 20px;
           }
         }
 
-        div {
-          width: 100%;
+        & div[class*="label"], div[class*="menu"] div {
+           width: 100%;
         }
       }
     }
