@@ -21,24 +21,29 @@ class Websocket extends Component {
   }
 
   setupWebsocket() {
-    let websocket = new WebSocket(this.props.connectionString)
-    var connectionCircle = document.getElementById('connectionCircle')
+    ((sock) => {
+      try { sock() }
+      catch (err) { this.retry() }
+    })(() => {
+      let websocket = new WebSocket(this.props.connectionString)
+      var connectionCircle = document.getElementById('connectionCircle')
 
-    websocket.onopen = () => {
-      Websocket.socket = websocket
-      document.getElementById('errorBlock').style.display = 'none'
-      connectionCircle.setAttribute('data-isUp', 'true')
-      document.querySelector('.spinner').style.display = 'block'
-    }
+      websocket.onopen = () => {
+        Websocket.socket = websocket
+        document.getElementById('errorBlock').style.display = 'none'
+        connectionCircle.setAttribute('data-isUp', 'true')
+        document.querySelector('.spinner').style.display = 'block'
+      }
 
-    websocket.onmessage = (msg) => {
-      connectionCircle.style.backgroundColor = 'rgb(0,110,0)'
-      this.sendToClients(JSON.parse(msg.data))
-    }
+      websocket.onmessage = (msg) => {
+        connectionCircle.style.backgroundColor = 'rgb(0,110,0)'
+        this.sendToClients(JSON.parse(msg.data))
+      }
 
-    websocket.onclose = (e) => {
-      this.retry()
-    }
+      websocket.onclose = (e) => {
+        this.retry()
+      }
+    })
   }
 
   componentDidMount() {
