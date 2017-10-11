@@ -9,7 +9,8 @@ class Header extends Component {
 
     this.state = {
       status: 'trying to establish connection with CoD4 Launcher',
-      user: null
+      user: null,
+      isConnected: false
     }
   }
 
@@ -69,12 +70,16 @@ class Header extends Component {
 
       if (nextProps.socksMessage.CLOSED !== undefined && nextProps.socksMessage.CLOSED !== this.state.status) {
         this.setState({
-          status: nextProps.socksMessage.CLOSED
+          status: nextProps.socksMessage.CLOSED,
+          isConnected: false
         })
       }
 
       if (nextProps.socksMessage.servers != null && nextProps.socksMessage.servers !== this.state.list) {
         this.updateDB(nextProps.socksMessage.servers)
+        this.setState({
+          isConnected: true
+        })
       }
   }
 
@@ -110,7 +115,7 @@ class Header extends Component {
           <div className="sort-container">
             <div className="sort-label"><SortIco/><span>{this.props.sort}</span></div>
             <div className="sort-menu">
-              <div onClick={() => {this.setSort('ping')}}>ping</div>
+              {this.state.isConnected ? <div onClick={() => {this.setSort('ping')}}>ping</div> : null}
               <div onClick={() => {this.setSort('player')}}>player</div>
               <div onClick={() => {this.setSort('name')}}>name</div>
             </div>

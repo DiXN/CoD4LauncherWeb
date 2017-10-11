@@ -172,10 +172,22 @@ body {
   }
 }
 
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 450px) {
   .top-container {
     .sub-menu {
       font-size: 18px;
     }
+  }
+
+  ul {
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    right: 0;
+    font-size: 18px;
+    height: auto !important;
+
   }
 }
