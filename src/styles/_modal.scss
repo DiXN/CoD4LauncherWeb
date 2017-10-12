@@ -45,6 +45,12 @@ $background: rgba($lightgrey, 0.80);
     opacity: 0.80;
     text-align: center;
 
+    div {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     span {
       position: absolute;
       right: 13px;

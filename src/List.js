@@ -142,7 +142,9 @@ class List extends Component {
   }
 
   handleRightClick(e, item) {
-    e.preventDefault()
+    if (e) {
+        e.preventDefault()
+    }
 
     this.setState({
       IpOrName: item.IPorName,
@@ -237,7 +239,7 @@ class List extends Component {
 
         return(
           <li className={className} key={key} style={style} onContextMenu={(e) => this.handleRightClick(e, li)}
-            onClick={() => {this.handleServerClick(li.IP)}} onMouseOver={(e) => {this.getMapImage(li.Map, e)}}
+            onClick={() => {this.state.isConnected ? this.handleServerClick(li.IP) : this.handleRightClick(null, li)}} onMouseOver={(e) => {this.getMapImage(li.Map, e)}}
               onMouseOut={() => {document.querySelector('.mapCircle').classList.remove('mapCircleHover')}}>
             <div className='flexParent'>
               <div className='liTitleDiv'>{li.ServerName}</div>

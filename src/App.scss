@@ -108,6 +108,10 @@ body {
     transition: top 0.5s;
     width: 100% !important;
   }
+
+  .modal .body .react-scrollbar-default {
+    max-height: 22em !important;
+  }
 }
 
 @media screen and (max-width: 690px) {
@@ -188,6 +192,22 @@ body {
     right: 0;
     font-size: 18px;
     height: auto !important;
+  }
 
+  .modal {
+    &, .header, .footer {
+      border-radius: 0;
+    }
+
+    .header div {
+      margin-left: 10px;
+      width: 85%;
+    }
+
+    .footer {
+      div span {
+        justify-content: center !important;
+      }
+    }
   }
 }

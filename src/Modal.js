@@ -101,7 +101,7 @@ class Modal extends Component {
         <div className="backdrop" onClick={(e) => {this.onClickOutside(e)}}>
           <div className="modal" style={{backgroundImage : this.state.map}}>
             <div className="header">
-              {this.props.item.ServerName}
+              <div>{this.props.item.ServerName}</div>
               <span onMouseDown={this.props.onClose}>&#x2715;</span>
             </div>
             <div className="body">
@@ -118,17 +118,22 @@ class Modal extends Component {
                 </div>
               </Scrollbars>
             </div>
-            <div className="footer">
+            <div className="footer" style={this.props.isConnected ? {padding: '9px 0'} : {padding: '15px 0', display: 'initial'}}>
+            {this.props.isConnected ?
               <div>
-                {this.props.isConnected ? <span style={pingStatus()}>Ping: {this.props.item.Ping}</span> : null}
-              </div>
+                 <span style={pingStatus()}>Ping: {this.props.item.Ping}</span>
+              </div> : null}
               <div>
-                <span style={playerStatus()}>Players: {this.props.item.CurrentPlayers}/{this.props.item.MaxPlayers}</span>
+                <span style={this.props.isConnected ? playerStatus() : {...playerStatus(),
+                  ...{display: 'flex', justifyContent: 'flex-end', marginRight: '10px'}}}>Players: {this.props.item.CurrentPlayers}/{this.props.item.MaxPlayers}</span>
               </div>
+              {this.props.isConnected ?
               <div>
-                <button onClick={() => {this.props.onServerClick(this.props.item.IP)}}>Connect</button>
-                <button className="danger" onClick={this.props.onClose}>Delete</button>
-              </div>
+                <div>
+                  <button onClick={() => {this.props.onServerClick(this.props.item.IP)}}>Connect</button>
+                  <button className="danger" onClick={this.props.onClose}>Delete</button>
+                </div>
+              </div> : null}
             </div>
           </div>
         </div>
