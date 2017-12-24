@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Scrollbars from 'react-scrollbar-js';
+import { connect } from 'react-redux'; 
+import {conTypes, conToBool} from './reducers/connection-reducer.js';
 
 class Modal extends Component {
   constructor(props) {
@@ -118,16 +120,16 @@ class Modal extends Component {
                 </div>
               </Scrollbars>
             </div>
-            <div className="footer" style={this.props.isConnected ? {padding: '9px 0'} : {padding: '15px 0', display: 'initial'}}>
-            {this.props.isConnected ?
+            <div className="footer" style={conToBool(this.props.conState, conTypes.CONNECTED) ? {padding: '9px 0'} : {padding: '15px 0', display: 'initial'}}> 
+            {conToBool(this.props.conState, conTypes.CONNECTED) ? 
               <div>
                  <span style={pingStatus()}>Ping: {this.props.item.Ping}</span>
               </div> : null}
               <div>
-                <span style={this.props.isConnected ? playerStatus() : {...playerStatus(),
-                  ...{display: 'flex', justifyContent: 'flex-end', marginRight: '10px'}}}>Players: {this.props.item.CurrentPlayers}/{this.props.item.MaxPlayers}</span>
+                <span style={conToBool(this.props.conState, conTypes.CONNECTED) ? playerStatus() : {...playerStatus(), 
+                  ...{display: 'flex', justifyContent: 'flex-end', marginRight: '10px'}}}>Players: {this.props.item.CurrentPlayers}/{this.props.item.MaxPlayers}</span> 
               </div>
-              {this.props.isConnected ?
+              {conToBool(this.props.conState, conTypes.CONNECTED) ? 
               <div>
                 <div>
                   <button onClick={() => {this.props.onServerClick(this.props.item.IP)}}>Connect</button>
@@ -148,4 +150,10 @@ Modal.propTypes = {
   show: PropTypes.bool,
 };
 
-export default Modal;
+const mapStateToProps = (store) => { 
+  return { 
+    conState: store.connectionState 
+  } 
+} 
+
+export default connect(mapStateToProps)(Modal) 

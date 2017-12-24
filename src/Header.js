@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import SortIco from 'react-icons/lib/fa/sort'
 import Firebase, { auth, provider } from './Firebase.js';
+import {conTypes, conToBool} from './reducers/connection-reducer.js' 
+import {setConnection} from './actions/connection-action.js' 
+import { connect } from 'react-redux'; 
+import store from './store.js'; 
 
 class Header extends Component {
   constructor(props) {
@@ -9,8 +13,7 @@ class Header extends Component {
 
     this.state = {
       status: 'trying to establish connection with CoD4 Launcher',
-      user: null,
-      isConnected: false
+      user: null
     }
   }
 
@@ -54,28 +57,54 @@ class Header extends Component {
       if (user) {
         this.setState({ user })
 
+        if(!conToBool(this.props.conState, conTypes.CONNECTED)) {
+          store.dispatch(setConnection('connectionStatus', conTypes.ONLINE))
+        }
+
         Firebase.database().ref(`Users/${this.state.user.uid}`).on('value', (snapshot) => {
           this.props.firebaseCallback(snapshot.val())
         })
+      } else {
+        setTimeout(() => {
+          if(!conToBool(this.props.conState, conTypes.CONNECTED)) {
+            store.dispatch(setConnection('connectionStatus', conTypes.OFFLINE))
+          }
+  
+          this.props.firebaseCallback(null)
+        }, 1000)
       }
     })
   }
 
+  setStatusLabel = (state) => { 
+    switch (state) { 
+      case conTypes.ONLINE: 
+        this.setState({ 
+          status: 'You are online but not connected to CoD4Launcher, therefore only server refreshing works when signed in' 
+        }) 
+        break; 
+      case conTypes.OFFLINE:  
+        this.setState({ 
+          status: 'Could not connect to CoD4Launcher' 
+        }) 
+        break; 
+      default: 
+        break; 
+    } 
+  } 
+
   componentWillReceiveProps(nextProps) {
-      if (nextProps.socksMessage.PCName !== undefined && nextProps.socksMessage.PCName !== this.state.status) {
+      if (nextProps.socksMessage.PCName != null) {
         this.setState({
           status: `You are connected to CoD4Launcher on ${nextProps.socksMessage.PCName}`
         })
       }
 
-      if (nextProps.socksMessage.CLOSED !== undefined && nextProps.socksMessage.CLOSED !== this.state.status) {
-        this.setState({
-          status: nextProps.socksMessage.CLOSED,
-          isConnected: false
-        })
-      }
+      if(nextProps.conState != null) { 
+        this.setStatusLabel(nextProps.conState) 
+      } 
 
-      if (nextProps.socksMessage.servers != null && nextProps.socksMessage.servers !== this.state.list) {
+      if (nextProps.socksMessage.servers != null) {
         this.updateDB(nextProps.socksMessage.servers)
         this.setState({
           isConnected: true
@@ -131,4 +160,10 @@ Header.PropTypes = {
   sortCallback: PropTypes.func
 }
 
-export default Header;
+const mapStateToProps = (store) => { 
+  return { 
+    conState: store.connectionState 
+  } 
+} 
+ 
+export default connect(mapStateToProps)(Header) 

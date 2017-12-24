@@ -1,9 +1,15 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
+import store from './store.js'; 
+import {setConnection} from './actions/connection-action.js' 
+import {sendSockMessage} from './actions/socket-action.js' 
+import {conTypes} from './reducers/connection-reducer.js' 
 
 class Websocket extends Component {
   constructor(props) {
     super(props)
+
+    this.firstRun = true
   }
 
   static socket = null
@@ -13,6 +19,12 @@ class Websocket extends Component {
       Websocket.socket = null
       this.setupWebsocket()
       this.sendToClients({'CLOSED': 'Could not connect to CoD4Launcher'})
+      store.dispatch(sendSockMessage({'CLOSED': 'Could not connect to CoD4Launcher'}))
+
+      if(this.firstRun) {
+        store.dispatch(setConnection('connectionStatus', conTypes.ONLINE))
+        this.firstRun = false
+      }
     }, 2000)
   }
 
@@ -30,9 +42,10 @@ class Websocket extends Component {
 
       websocket.onopen = () => {
         Websocket.socket = websocket
-        document.getElementById('errorBlock').style.display = 'none'
         connectionCircle.setAttribute('data-isUp', 'true')
         document.querySelector('.spinner').style.display = 'block'
+        store.dispatch(setConnection('connectionStatus', conTypes.CONNECTED))
+        this.firstRun = true
       }
 
       websocket.onmessage = (msg) => {

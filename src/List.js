@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import Modal from './Modal.js';
 import Websocket from './WebSocket.js';
 import {TransitionMotion, spring, presets} from 'react-motion';
+import store from './store.js'; 
+import {setConnection} from './actions/connection-action.js' 
+import {conTypes, conToBool} from './reducers/connection-reducer.js' 
+import { connect } from 'react-redux'; 
 
 class List extends Component {
   constructor(props) {
@@ -14,111 +18,128 @@ class List extends Component {
       IpOrName: '',
       isConnected: false
     }
+
+    this.isRunning = false
+  }
+
+  lengthCheck = () => {
+    if(this.state.list.length >= 12) {
+      document.querySelector('#mainContentBlock').classList.add('smallContentBlock')
+    } else {
+      document.querySelector('#mainContentBlock').classList.remove('smallContentBlock')
+    }
+  }
+
+  fetchServers = (nextProps)  => {
+    const displayError = () => {
+      if(nextProps && !conToBool(nextProps.conState, conTypes.CONNECTED)) {
+        console.log('server DOWN or not logged in!')
+        var connectionCircle = document.getElementById('connectionCircle')
+        connectionCircle.style.backgroundColor = 'rgb(255,70,0)'
+        connectionCircle.setAttribute('data-isUp', 'false')
+        document.querySelector('.spinner').style.display = 'none'
+        store.dispatch(setConnection('connectionStatus', conTypes.OFFFLINE))
+      }
+
+      this.isRunning = false
+    }
+
+    const fetchServer = (endpoint) => {
+      Promise.all(this.props.firebaseList.servers.map((x) => {
+        return fetch(`${endpoint}/ip/${x.IP}`).then((response) => {
+          return response.json()
+        }).then((output) => {
+          if(output.status !== 'DOWN') {
+            return {
+              IP:             x.IP,
+              IPorName:       x.IPorName,
+              Status:         output.status,
+              CurrentPlayers: output.numplayers,
+              MaxPlayers:     output.sv_maxclients,
+              Map:            output.mapname,
+              ServerName:     output.sv_hostname,
+              ListOfPlayers:  output.list_of_players,
+            }
+          } else {
+            return {
+              IP:             x.IP,
+              IPorName:       x.IPorName,
+              Status:         output.status,
+              CurrentPlayers: '-1',
+            }
+          }
+        })
+      })).then((response) => {
+        document.querySelector('.spinner').style.display = 'none'
+        
+        if(nextProps && !conToBool(nextProps.conState, conTypes.CONNECTED)) {
+          document.querySelector('#connectionCircle').style.backgroundColor = 'rgb(255,138,0)'
+        }
+        
+        store.dispatch(setConnection('connectionStatus', conTypes.ONLINE))
+
+        this.setState({
+          list: response,
+          item: response.find((elem) => elem != null ? elem.IPorName === this.state.IpOrName : false),
+          isConnected: false
+        }, () => {
+          this.lengthCheck()
+          this.isRunning = false
+        })
+      }).catch(() => {
+        displayError()
+      })
+    }
+
+    ((endpoints, retries) => {
+      this.isRunning = true
+      const checkEndpoints = (endpoints, retries) => {
+        if (endpoints.length === 0) {
+          if(retries === 0) {
+            return displayError()
+          } else {
+            setTimeout(() => {
+              return checkEndpoints(endpoints, retries - 1)
+            }, 750)
+          }
+        } else {
+          const [x, ...xs] = endpoints
+          fetch(`${x}/ip/`).then((res) => {
+            if(this.props.firebaseList && this.props.firebaseList.servers) {
+              return fetchServer(x)
+            } else {
+              checkEndpoints(xs, retries)
+            }
+          }).catch(() => {
+            return checkEndpoints(xs, retries)
+          })
+        }
+      }
+      
+      checkEndpoints(endpoints, retries)
+    })(['http://mknasx.myds.me:3000', 'http://mknas:3000'], 2)
+  }
+
+  componentDidMount() {
+    this.fetchServers(null)
   }
 
   componentWillReceiveProps(nextProps) {
-    const lengthCheck = () => {
-      if(this.state.list.length >= 12) {
-        document.querySelector('#mainContentBlock').classList.add('smallContentBlock')
-      } else {
-        document.querySelector('#mainContentBlock').classList.remove('smallContentBlock')
-      }
-    }
-
-    const display = () => {
-      document.querySelector('#mainContentBlock').style.display = 'block'
-      document.querySelector('.spinner').style.display = 'none'
-      document.querySelector('.error').style.display = 'none'
-    }
-
     if (nextProps.socksMessage.servers != null && nextProps.socksMessage.servers !== this.state.list) {
-      display()
+      document.querySelector('.spinner').style.display = 'none'
 
       this.setState({
         list: nextProps.socksMessage.servers,
         isConnected: true,
         item: nextProps.socksMessage.servers.find((elem) => elem != null ? elem.IPorName === this.state.IpOrName : false)
       }, () => {
-        lengthCheck()
+        this.lengthCheck()
       })
     }
 
-    if (nextProps.socksMessage.CLOSED != null) {
-      const displayError = () => {
-        console.log('server DOWN or not logged in!')
-        var connectionCircle = document.getElementById('connectionCircle')
-        connectionCircle.style.backgroundColor = 'rgb(255,70,0)'
-        document.querySelector('.error').style.display = 'block'
-        connectionCircle.setAttribute('data-isUp', 'false')
-        document.querySelector('.spinner').style.display = 'none'
-        document.querySelector('#mainContentBlock').style.display = 'none'
-      }
-
-      if (this.props.firebaseList.servers) {
-        const fetchServer = (endpoint) => {
-          Promise.all(this.props.firebaseList.servers.map((x) => {
-            return fetch(`${endpoint}/ip/${x.IP}`).then((response) => {
-              return response.json()
-            }).then((output) => {
-              if(output.status !== 'DOWN') {
-                return {
-                  IP:             x.IP,
-                  IPorName:       x.IPorName,
-                  Status:         output.status,
-                  CurrentPlayers: output.numplayers,
-                  MaxPlayers:     output.sv_maxclients,
-                  Map:            output.mapname,
-                  ServerName:     output.sv_hostname,
-                  ListOfPlayers:  output.list_of_players,
-                }
-              } else {
-                return {
-                  IP:             x.IP,
-                  IPorName:       x.IPorName,
-                  Status:         output.status,
-                  CurrentPlayers: '-1',
-                }
-              }
-            })
-          })).then((response) => {
-            display()
-
-            if (nextProps.socksMessage.CLOSED != null) {
-              document.querySelector('#connectionCircle').style.backgroundColor = 'rgb(255,138,0)'
-            }
-
-            this.setState({
-              list: response,
-              item: response.find((elem) => elem != null ? elem.IPorName === this.state.IpOrName : false),
-              isConnected: false
-            }, () => {
-              lengthCheck()
-            })
-          }).catch(() => {
-            displayError()
-          })
-        }
-
-        ((endpoints) => {
-          const checkEndpoints = (endpoints) => {
-            if (endpoints.length === 0) {
-              return displayError()
-            } else {
-              const [x, ...xs] = endpoints
-              fetch(`${x}/ip/`).then((res) => {
-                return fetchServer(x)
-              }).catch(() => {
-                return checkEndpoints(xs)
-              })
-            }
-          }
-          
-          checkEndpoints(endpoints)
-        })(['http://mknasx.myds.me:3000', 'http://mknas:3000'])
-    } else {
-      displayError()
+    if (this.props.sockMessage.msg && this.props.sockMessage.msg.CLOSED != null && !this.isRunning) {
+      this.fetchServers(nextProps)
     }
-  }
 }
 
   getMapImage(map, e) {
@@ -143,7 +164,7 @@ class List extends Component {
 
   handleRightClick(e, item) {
     if (e) {
-        e.preventDefault()
+      e.preventDefault()
     }
 
     this.setState({
@@ -272,4 +293,11 @@ class List extends Component {
   }
 }
 
-export default List;
+const mapStateToProps = (store) => { 
+  return { 
+    conState: store.connectionState,
+    sockMessage: store.socksMessage
+  } 
+}   
+ 
+export default connect(mapStateToProps)(List)
