@@ -3,8 +3,8 @@ import Header from './Header.js';
 import Websocket from './WebSocket.js';
 import List from './List.js';
 import BackgroundSwitcher from './BackgroundSwitcher.js';
-import Error from './Error.js'; 
-import ContentBlock from './ContentBlock.js' 
+import Error from './Error.js';
+import ContentBlock from './ContentBlock.js'
 import './App.css';
 
 class App extends Component {
@@ -49,17 +49,14 @@ class App extends Component {
       <div id="bodyContent">
         <Websocket connectionString = "ws://127.0.0.1:13660/websession/" callback={this.socketCallback.bind(this)}/>
         <Header callback={this.filterCallback.bind(this)} sort={this.state.sort}
-          sortCallback={this.sortCallback.bind(this)} socksMessage={this.state.socksMessage} firebaseCallback={this.firebaseCallback.bind(this)}/>
-
-        <ContentBlock filter={this.state.filter} sort={this.state.sort} socksMessage={this.state.socksMessage} firebaseList={this.state.firebaseList}/> 
-        <Error /> 
-
+          sortCallback={this.sortCallback.bind(this)} firebaseCallback={this.firebaseCallback.bind(this)}/>
+        <ContentBlock filter={this.state.filter} sort={this.state.sort} socksMessage={this.state.socksMessage} firebaseList={this.state.firebaseList}/>
+        <Error />
         <div className="spinner">
           <div className="bounce1"></div>
           <div className="bounce2"></div>
           <div className="bounce3"></div>
         </div>
-
         <div id="mpCircle" className="mapCircle center"/>
         <BackgroundSwitcher timeout={40000}/>
       </div>

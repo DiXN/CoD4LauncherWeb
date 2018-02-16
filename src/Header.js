@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import SortIco from 'react-icons/lib/fa/sort'
 import Firebase, { auth, provider } from './Firebase.js';
-import {conTypes, conToBool} from './reducers/connection-reducer.js' 
-import {setConnection} from './actions/connection-action.js' 
-import { connect } from 'react-redux'; 
-import store from './store.js'; 
+import {conTypes, conToBool} from './reducers/connection-reducer.js'
+import {setConnection} from './actions/connection-action.js'
+import { connect } from 'react-redux';
+import store from './store.js';
 
 class Header extends Component {
   constructor(props) {
@@ -59,6 +59,7 @@ class Header extends Component {
 
         if(!conToBool(this.props.conState, conTypes.CONNECTED)) {
           store.dispatch(setConnection('connectionStatus', conTypes.ONLINE))
+          document.querySelector('.spinner').style.display = 'block'
         }
 
         Firebase.database().ref(`Users/${this.state.user.uid}`).on('value', (snapshot) => {
@@ -68,30 +69,31 @@ class Header extends Component {
         setTimeout(() => {
           if(!conToBool(this.props.conState, conTypes.CONNECTED)) {
             store.dispatch(setConnection('connectionStatus', conTypes.OFFLINE))
+            document.querySelector('.spinner').style.display = 'none'
           }
-  
+
           this.props.firebaseCallback(null)
-        }, 1000)
+        }, 1500)
       }
     })
   }
 
-  setStatusLabel = (state) => { 
-    switch (state) { 
-      case conTypes.ONLINE: 
-        this.setState({ 
-          status: 'You are online but not connected to CoD4Launcher, therefore only server refreshing works when signed in' 
-        }) 
-        break; 
-      case conTypes.OFFLINE:  
-        this.setState({ 
-          status: 'Could not connect to CoD4Launcher' 
-        }) 
-        break; 
-      default: 
-        break; 
-    } 
-  } 
+  setStatusLabel = (state) => {
+    switch (state) {
+      case conTypes.ONLINE:
+        this.setState({
+          status: 'You are online but not connected to CoD4Launcher, therefore only server refreshing works when signed in'
+        })
+        break;
+      case conTypes.OFFLINE:
+        this.setState({
+          status: 'Could not connect to CoD4Launcher'
+        })
+        break;
+      default:
+        break;
+    }
+  }
 
   componentWillReceiveProps(nextProps) {
       if (nextProps.socksMessage.PCName != null) {
@@ -100,9 +102,9 @@ class Header extends Component {
         })
       }
 
-      if(nextProps.conState != null) { 
-        this.setStatusLabel(nextProps.conState) 
-      } 
+      if(nextProps.conState != null) {
+        this.setStatusLabel(nextProps.conState)
+      }
 
       if (nextProps.socksMessage.servers != null) {
         this.updateDB(nextProps.socksMessage.servers)
@@ -160,10 +162,11 @@ Header.PropTypes = {
   sortCallback: PropTypes.func
 }
 
-const mapStateToProps = (store) => { 
-  return { 
-    conState: store.connectionState 
-  } 
-} 
- 
-export default connect(mapStateToProps)(Header) 
+const mapStateToProps = (store) => {
+  return {
+    conState: store.connectionState,
+    socksMessage: store.socksMessage
+  }
+}
+
+export default connect(mapStateToProps)(Header)

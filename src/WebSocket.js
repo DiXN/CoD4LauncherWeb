@@ -1,9 +1,9 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
-import store from './store.js'; 
-import {setConnection} from './actions/connection-action.js' 
-import {sendSockMessage} from './actions/socket-action.js' 
-import {conTypes} from './reducers/connection-reducer.js' 
+import store from './store.js';
+import {setConnection} from './actions/connection-action.js'
+import {sendSockMessage} from './actions/socket-action.js'
+import {conTypes} from './reducers/connection-reducer.js'
 
 class Websocket extends Component {
   constructor(props) {
@@ -25,7 +25,7 @@ class Websocket extends Component {
         store.dispatch(setConnection('connectionStatus', conTypes.ONLINE))
         this.firstRun = false
       }
-    }, 2000)
+    }, this.firstRun ? 100 : 2000)
   }
 
   sendToClients(msg) {
