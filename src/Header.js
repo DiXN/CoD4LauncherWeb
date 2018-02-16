@@ -73,26 +73,9 @@ class Header extends Component {
           }
 
           this.props.firebaseCallback(null)
-        }, 1500)
+        }, 2000)
       }
     })
-  }
-
-  setStatusLabel = (state) => {
-    switch (state) {
-      case conTypes.ONLINE:
-        this.setState({
-          status: 'You are online but not connected to CoD4Launcher, therefore only server refreshing works when signed in'
-        })
-        break;
-      case conTypes.OFFLINE:
-        this.setState({
-          status: 'Could not connect to CoD4Launcher'
-        })
-        break;
-      default:
-        break;
-    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -100,10 +83,6 @@ class Header extends Component {
         this.setState({
           status: `You are connected to CoD4Launcher on ${nextProps.socksMessage.PCName}`
         })
-      }
-
-      if(nextProps.conState != null) {
-        this.setStatusLabel(nextProps.conState)
       }
 
       if (nextProps.socksMessage.servers != null) {
@@ -120,9 +99,18 @@ class Header extends Component {
         <div id="topBlock">
           <div>
             <label>CoD4 Servers</label>
-            <div id="connectionCircle" className="tooltip" data-isUp="false">
+            {conToBool(this.props.conState, conTypes.CONNECTED) ?
+            <div id="connectionCircle" className="tooltip" data-isUp="true" style={{backgroundColor: 'rgb(0, 110, 0)'}}>
               <span id="tooltip-text">{this.state.status}</span>
             </div>
+            : conToBool(this.props.conState, conTypes.ONLINE) ?
+            <div id="connectionCircle" className="tooltip" data-isUp="false" style={{backgroundColor: 'rgb(255, 138, 0)'}}>
+              <span id="tooltip-text">You are online but not connected to CoD4Launcher, therefore only server refreshing works when signed in</span>
+            </div>
+            : conToBool(this.props.conState, conTypes.OFFLINE) ?
+            <div id="connectionCircle" className="tooltip" data-isUp="false" style={{backgroundColor: 'rgb(255,70,0)'}}>
+              <span id="tooltip-text">Could not connect to CoD4Launcher</span>
+            </div> : null}
           </div>
           <div>
             <input type="text" placeholder="filter servers" onKeyUp={this.filterServer.bind(this)}/>

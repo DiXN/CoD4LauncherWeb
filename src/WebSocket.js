@@ -49,7 +49,6 @@ class Websocket extends Component {
       }
 
       websocket.onmessage = (msg) => {
-        connectionCircle.style.backgroundColor = 'rgb(0,110,0)'
         this.sendToClients(JSON.parse(msg.data))
       }
 

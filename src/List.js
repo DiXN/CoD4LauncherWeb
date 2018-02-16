@@ -34,9 +34,6 @@ class List extends Component {
     const displayError = () => {
       if(nextProps && !conToBool(nextProps.conState, conTypes.CONNECTED)) {
         console.log('server DOWN or not logged in!')
-        var connectionCircle = document.getElementById('connectionCircle')
-        connectionCircle.style.backgroundColor = 'rgb(255,70,0)'
-        connectionCircle.setAttribute('data-isUp', 'false')
         document.querySelector('.spinner').style.display = 'none'
         store.dispatch(setConnection('connectionStatus', conTypes.OFFFLINE))
       }
@@ -71,11 +68,6 @@ class List extends Component {
         })
       })).then((response) => {
         document.querySelector('.spinner').style.display = 'none'
-
-        if(nextProps && !conToBool(nextProps.conState, conTypes.CONNECTED)) {
-          document.querySelector('#connectionCircle').style.backgroundColor = 'rgb(255,138,0)'
-        }
-
         store.dispatch(setConnection('connectionStatus', conTypes.ONLINE))
 
         this.setState({
