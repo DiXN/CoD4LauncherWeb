@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import Modal from './Modal.js';
 import Websocket from './WebSocket.js';
 import {TransitionMotion, spring, presets} from 'react-motion';
-import store from './store.js'; 
-import {setConnection} from './actions/connection-action.js' 
-import {conTypes, conToBool} from './reducers/connection-reducer.js' 
-import { connect } from 'react-redux'; 
+import store from './store.js';
+import {setConnection} from './actions/connection-action.js'
+import {conTypes, conToBool} from './reducers/connection-reducer.js'
+import { connect } from 'react-redux';
 
 class List extends Component {
   constructor(props) {
@@ -71,11 +71,11 @@ class List extends Component {
         })
       })).then((response) => {
         document.querySelector('.spinner').style.display = 'none'
-        
+
         if(nextProps && !conToBool(nextProps.conState, conTypes.CONNECTED)) {
           document.querySelector('#connectionCircle').style.backgroundColor = 'rgb(255,138,0)'
         }
-        
+
         store.dispatch(setConnection('connectionStatus', conTypes.ONLINE))
 
         this.setState({
@@ -115,7 +115,7 @@ class List extends Component {
           })
         }
       }
-      
+
       checkEndpoints(endpoints, retries)
     })(['http://mknasx.myds.me:3000', 'http://mknas:3000'], 2)
   }
@@ -293,11 +293,11 @@ class List extends Component {
   }
 }
 
-const mapStateToProps = (store) => { 
-  return { 
+const mapStateToProps = (store) => {
+  return {
     conState: store.connectionState,
     sockMessage: store.socksMessage
-  } 
-}   
- 
+  }
+}
+
 export default connect(mapStateToProps)(List)

@@ -7,7 +7,7 @@ export const setConnection = (connectionStatus, type) => {
         type: 'ONLINE',
         connectionStatus
       }
-    case conTypes.OFFLINE: 
+    case conTypes.OFFLINE:
       return {
         type: 'OFFLINE',
         connectionStatus

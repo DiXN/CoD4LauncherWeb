@@ -26,7 +26,7 @@ class BackgroundSwitcher extends Component {
   componentDidMount() {
     this.imageNames.forEach((element) => {
       this.setWallpaper(element)
-    })  
+    })
 
     setInterval(() => {
       this.setState({
