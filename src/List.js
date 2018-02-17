@@ -30,9 +30,9 @@ class List extends Component {
     }
   }
 
-  fetchServers = (nextProps)  => {
+  fetchServers = ()  => {
     const displayError = () => {
-      if(nextProps && !conToBool(nextProps.conState, conTypes.CONNECTED)) {
+      if(!conToBool(this.props.conState, conTypes.CONNECTED)) {
         console.log('server DOWN or not logged in!')
         document.querySelector('.spinner').style.display = 'none'
         store.dispatch(setConnection('connectionStatus', conTypes.OFFFLINE))
@@ -68,7 +68,10 @@ class List extends Component {
         })
       })).then((response) => {
         document.querySelector('.spinner').style.display = 'none'
-        store.dispatch(setConnection('connectionStatus', conTypes.ONLINE))
+
+        if(!conToBool(this.props.conState, conTypes.CONNECTED)) {
+          store.dispatch(setConnection('connectionStatus', conTypes.ONLINE))
+        }
 
         this.setState({
           list: response,
@@ -117,20 +120,20 @@ class List extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.socksMessage.servers != null && nextProps.socksMessage.servers !== this.state.list) {
+    if (nextProps.sockMessage && nextProps.sockMessage.msg && nextProps.sockMessage.msg.servers && nextProps.sockMessage.msg.servers !== this.state.list) {
       document.querySelector('.spinner').style.display = 'none'
 
       this.setState({
-        list: nextProps.socksMessage.servers,
+        list: nextProps.sockMessage.msg.servers,
         isConnected: true,
-        item: nextProps.socksMessage.servers.find((elem) => elem != null ? elem.IPorName === this.state.IpOrName : false)
+        item: nextProps.sockMessage.msg.servers.find((elem) => elem != null ? elem.IPorName === this.state.IpOrName : false)
       }, () => {
         this.lengthCheck()
       })
     }
 
     if (this.props.sockMessage.msg && this.props.sockMessage.msg.CLOSED != null && !this.isRunning) {
-      this.fetchServers(nextProps)
+      this.fetchServers()
     }
 }
 

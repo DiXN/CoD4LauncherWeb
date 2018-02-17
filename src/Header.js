@@ -79,17 +79,14 @@ class Header extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-      if (nextProps.socksMessage.PCName != null) {
+      if (nextProps.socksMessage && nextProps.socksMessage.msg && nextProps.socksMessage.msg.PCName) {
         this.setState({
-          status: `You are connected to CoD4Launcher on ${nextProps.socksMessage.PCName}`
+          status: `You are connected to CoD4Launcher on ${nextProps.socksMessage.msg.PCName}`
         })
       }
 
-      if (nextProps.socksMessage.servers != null) {
-        this.updateDB(nextProps.socksMessage.servers)
-        this.setState({
-          isConnected: true
-        })
+      if (nextProps.socksMessage && nextProps.socksMessage.msg && nextProps.socksMessage.msg.servers) {
+        this.updateDB(nextProps.socksMessage.msg.servers)
       }
   }
 
@@ -134,7 +131,7 @@ class Header extends Component {
           <div className="sort-container">
             <div className="sort-label"><SortIco/><span>{this.props.sort}</span></div>
             <div className="sort-menu">
-              {this.state.isConnected ? <div onClick={() => {this.setSort('ping')}}>ping</div> : null}
+              {conToBool(this.props.conState, conTypes.CONNECTED) ? <div onClick={() => {this.setSort('ping')}}>ping</div> : null}
               <div onClick={() => {this.setSort('player')}}>player</div>
               <div onClick={() => {this.setSort('name')}}>name</div>
             </div>

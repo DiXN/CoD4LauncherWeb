@@ -18,7 +18,6 @@ class Websocket extends Component {
     setTimeout(() => {
       Websocket.socket = null
       this.setupWebsocket()
-      this.sendToClients({'CLOSED': 'Could not connect to CoD4Launcher'})
       store.dispatch(sendSockMessage({'CLOSED': 'Could not connect to CoD4Launcher'}))
 
       if(this.firstRun) {
@@ -28,28 +27,22 @@ class Websocket extends Component {
     }, this.firstRun ? 100 : 2000)
   }
 
-  sendToClients(msg) {
-    this.props.callback((msg))
-  }
-
   setupWebsocket() {
     ((sock) => {
       try { sock() }
       catch (err) { this.retry() }
     })(() => {
       let websocket = new WebSocket(this.props.connectionString)
-      var connectionCircle = document.getElementById('connectionCircle')
 
       websocket.onopen = () => {
         Websocket.socket = websocket
-        connectionCircle.setAttribute('data-isUp', 'true')
         document.querySelector('.spinner').style.display = 'block'
         store.dispatch(setConnection('connectionStatus', conTypes.CONNECTED))
         this.firstRun = true
       }
 
       websocket.onmessage = (msg) => {
-        this.sendToClients(JSON.parse(msg.data))
+        store.dispatch(sendSockMessage(JSON.parse(msg.data)))
       }
 
       websocket.onclose = (e) => {

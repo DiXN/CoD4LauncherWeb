@@ -5,8 +5,8 @@ const socketReducer = (state = {id: Math.random(), msg: {init: 'init'}}, action)
       default:
         return {...state, ...{id: Math.random(), msg: action.msg}}
     }
-  
+
     return state
   }
-  
+
   export default socketReducer

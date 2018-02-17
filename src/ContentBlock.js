@@ -8,7 +8,7 @@ const ContentBlock = ({conState, filter, sort, socksMessage, firebaseList}) => {
     <div>
       {(conToBool(conState, conTypes.CONNECTED) || conToBool(conState, conTypes.ONLINE)) ?
       <div className="fadeIn" id="mainContentBlock">
-        <List filter={filter} sort={sort} socksMessage={socksMessage} firebaseList={firebaseList}/>
+        <List filter={filter} sort={sort} firebaseList={firebaseList}/>
       </div> : null}
     </div>
   )
