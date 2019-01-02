@@ -43,7 +43,7 @@ class List extends Component {
 
     const fetchServer = (endpoint) => {
       Promise.all(this.props.firebaseList.servers.map((x) => {
-        return fetch(`${endpoint}/ip/${x.IP}`).then((response) => {
+        return fetch(`${endpoint}?server=${x.IP}`).then((response) => {
           return response.json()
         }).then((output) => {
           if(output.status !== 'DOWN') {
@@ -81,42 +81,14 @@ class List extends Component {
           this.lengthCheck()
           this.isRunning = false
         })
-      }).catch(() => {
+      }).catch((err) => {
         displayError()
       })
     }
 
-    ((endpoints, retries) => {
-      this.isRunning = true
-      const checkEndpoints = (endpoints, retries) => {
-        if (endpoints.length === 0) {
-          if(retries === 0) {
-            return displayError()
-          } else {
-            setTimeout(() => {
-              return checkEndpoints(endpoints, retries - 1)
-            }, 750)
-          }
-        } else {
-          const [x, ...xs] = endpoints
-          fetch(`${x}/ip/`).then((res) => {
-            if(this.props.firebaseList && this.props.firebaseList.servers) {
-              return fetchServer(x)
-            } else {
-              checkEndpoints(xs, retries)
-            }
-          }).catch(() => {
-            return checkEndpoints(xs, retries)
-          })
-        }
-      }
-
-      checkEndpoints(endpoints, retries)
-    })(['http://mknasx.myds.me:3000', 'http://mknas:3000'], 2)
-  }
-
-  componentDidMount() {
-    this.fetchServers(null)
+    setTimeout(() => {
+      fetchServer('https://c3jfo3vexh.execute-api.us-west-2.amazonaws.com/default/getServerInfo')
+    }, 1500)
   }
 
   componentWillReceiveProps(nextProps) {
