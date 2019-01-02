@@ -21,7 +21,7 @@ class List extends Component {
 
     this.isRunning = false
     this.timer = null
-    this.timeout = 1000
+    this.timeout = 2000
   }
 
   lengthCheck = () => {
@@ -106,7 +106,7 @@ class List extends Component {
         item: nextProps.sockMessage.msg.servers.find((elem) => elem != null ? elem.IPorName === this.state.IpOrName : false)
       }, () => {
         this.lengthCheck()
-        this.timeout = 1000
+        this.timeout = 2000
       })
     }
 
