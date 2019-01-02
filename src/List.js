@@ -20,6 +20,8 @@ class List extends Component {
     }
 
     this.isRunning = false
+    this.timer = null
+    this.timeout = 1000
   }
 
   lengthCheck = () => {
@@ -42,14 +44,13 @@ class List extends Component {
     }
 
     const fetchServer = (endpoint) => {
-      Promise.all(this.props.firebaseList.servers.map((x) => {
-        return fetch(`${endpoint}?server=${x.IP}`).then((response) => {
-          return response.json()
-        }).then((output) => {
+      const serverString = this.props.firebaseList.servers.map(s => s.IP).join(',')
+      fetch(`${endpoint}?server=${serverString}`).then(res => res.json()).then(res => {
+        const servers = res.map((output, i) => {
           if(output.status !== 'DOWN') {
             return {
-              IP:             x.IP,
-              IPorName:       x.IPorName,
+              IP:             this.props.firebaseList.servers[i].IP,
+              IPorName:       this.props.firebaseList.servers[i].IPorName,
               Status:         output.status,
               CurrentPlayers: output.numplayers,
               MaxPlayers:     output.sv_maxclients,
@@ -59,14 +60,14 @@ class List extends Component {
             }
           } else {
             return {
-              IP:             x.IP,
-              IPorName:       x.IPorName,
+              IP:             this.props.firebaseList.servers[i].IP,
+              IPorName:       this.props.firebaseList.servers[i].IPorName,
               Status:         output.status,
               CurrentPlayers: '-1',
             }
           }
         })
-      })).then((response) => {
+
         document.querySelector('.spinner').style.display = 'none'
 
         if(!conToBool(this.props.conState, conTypes.CONNECTED)) {
@@ -74,25 +75,29 @@ class List extends Component {
         }
 
         this.setState({
-          list: response,
-          item: response.find((elem) => elem != null ? elem.IPorName === this.state.IpOrName : false),
+          list: servers,
+          item: servers.find((elem) => elem != null ? elem.IPorName === this.state.IpOrName : false),
           isConnected: false
         }, () => {
           this.lengthCheck()
           this.isRunning = false
+          this.timer = null
+          this.timeout = 20000
         })
-      }).catch((err) => {
-        displayError()
-      })
+      }).catch(err => displayError())
     }
 
-    setTimeout(() => {
-      fetchServer('https://c3jfo3vexh.execute-api.us-west-2.amazonaws.com/default/getServerInfo')
-    }, 1500)
+    this.timer = setTimeout(() => {
+      if(this.props.firebaseList && this.props.firebaseList.servers) {
+        fetchServer('https://c3jfo3vexh.execute-api.us-west-2.amazonaws.com/default/getServerInfo')
+      }
+    }, this.timeout)
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.sockMessage && nextProps.sockMessage.msg && nextProps.sockMessage.msg.servers && nextProps.sockMessage.msg.servers !== this.state.list) {
+    if (nextProps.sockMessage && nextProps.sockMessage.msg
+       && nextProps.sockMessage.msg.servers
+        && nextProps.sockMessage.msg.servers !== this.state.list) {
       document.querySelector('.spinner').style.display = 'none'
 
       this.setState({
@@ -101,11 +106,14 @@ class List extends Component {
         item: nextProps.sockMessage.msg.servers.find((elem) => elem != null ? elem.IPorName === this.state.IpOrName : false)
       }, () => {
         this.lengthCheck()
+        this.timeout = 1000
       })
     }
 
     if (this.props.sockMessage.msg && this.props.sockMessage.msg.CLOSED != null && !this.isRunning) {
-      this.fetchServers()
+      if (!this.timer) {
+        this.fetchServers()
+      }
     }
 }
 
